@@ -1,58 +1,56 @@
-"use strict";
-
-require('dotenv').config();
-
-const myJson = require('./data/weather.json');
-
-const PORT = 3001;
-
+'use strict'
+const data = require('./data/weather.json')
+const cors = require("cors");
 const express = require('express');
-
 const app = express();
+require('dotenv').config();
+const port = process.env.PORT || 3001
 
-function City(date, description) {
-    this.Date = date;
-    this.Discription = description;
+app.use(cors());
+
+app.listen(port, () => {
+    console.log(`Server is running on port ${port}`)
+    }
+)
+
+app.get('/', (req, res) => {
+    res.send('Hello World')
 }
+)
 
 app.get('/weather', (req, res) => {
-    res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
-    res.header(
-        "Access-Control-Allow-Headers",
-        "Origin, X-Requested-With, Content-Type, Accept"
-    );
-
-    const returnedWeather = [];
-    const arr = [1, 2, 3];
-
-    let lat = req.query.lat;
-    let lon = req.query.lon;
-    let searchQuery = req.query.searchQuery;
-    if (lon && lat && searchQuery) {
-
-        let obj = myJson.find(element => {
-            return (searchQuery == element.city_name)
-
-        });
-
-        if (obj) {
-            obj.data.forEach((element) => {
-                returnedWeather.push(new City(element.datetime, element.weather.description));
-            })
-        }
-
-        (returnedWeather.length > 0) ? res.json({ 'weather': returnedWeather }) : res.status(405).send('No Item Found , Please check the Lat or Lon or the City Name ');
-    } else {
-
-        res.status(404).send('Please Enter the correct Parameter (lat , Lon ,Search Query)');
+    try {
+    let searchQuery = req.query.searchQuery
+    let arr = findData(searchQuery) 
+    let newArr= arr?.map(element => {
+        return new Forecast (element.weather.description ,element.datetime)
+    });
+    res.status(200).send(newArr)
     }
-});
+    catch (error) {
+        res.status(400).send(error)
+    }
+}
+)
 
-app.get('*', (req, res) => {
 
-    res.status(406).send('Not Found');
-});
 
-app.listen(PORT, () => {
-    console.log('Server listening ...');
-})
+
+// Functions and Classes
+function findData (searchQuery) {
+    for (let i = 0; i < data.length; i++) {
+        if (data[i].city_name == searchQuery) {
+            return data[i].data
+        }
+        else {
+            return null
+        }
+        }
+    }
+
+    class Forecast {
+        constructor(description, date) {
+            this.description = description
+            this.date = date
+        }
+    }
