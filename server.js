@@ -20,10 +20,8 @@ app.get('/', (req, res) => {
 
 app.get('/weather', (req, res) => {
     try {
-    let lat = req.query.lat
-    let lon = req.query.lon
     let searchQuery = req.query.searchQuery
-    let arr = findData(lat, lon, searchQuery) 
+    let arr = findData(searchQuery) 
     let newArr= arr?.map(element => {
         return new Forecast (element.weather.description ,element.datetime)
     });
@@ -39,13 +37,13 @@ app.get('/weather', (req, res) => {
 
 
 // Functions and Classes
-function findData (lat, lon, searchQuery) {
+function findData (searchQuery) {
     for (let i = 0; i < data.length; i++) {
-        if (data[i].lat == lat && data[i].lon == lon && data[i].city_name == searchQuery) {
+        if (data[i].city_name == searchQuery) {
             return data[i].data
         }
         else {
-            res.status(400).send('No data found')
+            return null
         }
         }
     }
