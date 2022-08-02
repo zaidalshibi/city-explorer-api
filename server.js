@@ -25,9 +25,9 @@ app.get('/weather', (req, res) => {
     let searchQuery = req.query.searchQuery
     let arr = findData(lat, lon, searchQuery) 
     let newArr= arr?.map(element => {
-        return new Forecast (element.weather.description ,element.datetime)
+        return new Forecast (`Low of ${element.low_temp}, high of ${element.high_temp} with ${element.weather.description}` ,element.datetime)
     });
-    res.status(200).send(newArr)
+    res.send(newArr)
     }
     catch (error) {
         res.status(400).send(error)
