@@ -44,6 +44,9 @@ function findData (lat, lon, searchQuery) {
         if (data[i].lat == lat && data[i].lon == lon && data[i].city_name == searchQuery) {
             return data[i].data
         }
+        else {
+            res.status(400).send('No data found')
+        }
         }
     }
 
