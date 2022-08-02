@@ -19,6 +19,7 @@ app.get('/', (req, res) => {
 )
 
 app.get('/weather', (req, res) => {
+    try {
     let lat = req.query.lat
     let lon = req.query.lon
     let searchQuery = req.query.searchQuery
@@ -28,7 +29,11 @@ app.get('/weather', (req, res) => {
     });
     res.send(newArr)
     }
-    )
+    catch (error) {
+        res.status(400).send(error)
+    }
+}
+)
 
 
 
