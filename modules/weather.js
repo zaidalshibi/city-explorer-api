@@ -5,7 +5,7 @@ async function weather(req, res){
     try {
         let lat = req.query.lat;
         let lon = req.query.lon;
-        let url = `https://api.weatherbit.io/v2.0/current?lat=${lat}&lon=${lon}&key=${process.env.WEATHER_API_KEY}`
+        let url = `https://api.weatherbit.io/v2.0/forecast/daily?lat=${lat}&lon=${lon}&key=${process.env.WEATHER_API_KEY}`
         let response = await axios.get(url)
         let data = new Weather(response.data.data[0].datetime,response.data.data[0].weather.description)
         res.send(data)
