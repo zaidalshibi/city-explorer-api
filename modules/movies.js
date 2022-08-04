@@ -6,7 +6,7 @@ async function movies(req, res){
     const returnedData = [];
         let url = `https://api.themoviedb.org/3/search/movie?api_key=${process.env.MOVIE_API_KEY}&query=${req.query.title}`
         if (cache[req.query.title] === undefined) {
-        await axios.get(url).then( response => {response.data.results.forEach(item => { let obj =  new Movie(item.title,item.overview,item.average_votes,item.total_votes, item.image_url , item.popularity, item.release_date);
+        await axios.get(url).then( response => {response.data.results.forEach(item => { let obj =  new Movie(item.title,item.overview,item.average_votes,item.total_votes, item.poster_path , item.popularity, item.release_date);
             returnedData.push(obj)})}
         ).catch(error => {
             res.status(400).send(error)
