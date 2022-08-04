@@ -21,7 +21,7 @@ async function city(req, res) {
             const display_name = response.data[0].display_name;
             const lat = response.data[0].lat;
             const lon = response.data[0].lon;
-            let center = `center=${lat},${lon}`;
+            let center = `&center=${lat},${lon}`;
             let url2 = "https://maps.locationiq.com/v3/staticmap?";
             let zoom = "&zoom=8";
             let response2 = url2+key+center+zoom;
