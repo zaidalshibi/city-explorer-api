@@ -21,7 +21,11 @@ async function city(req, res) {
             const display_name = response.data[0].display_name;
             const lat = response.data[0].lat;
             const lon = response.data[0].lon;
-            const obj = new City(display_name, lat, lon);
+            let center = `center=${lat},${lon}`;
+            let url2 = "https://maps.locationiq.com/v3/staticmap?";
+            let zoom = "&zoom=8";
+            let response2 = url2+key+center+zoom;
+            const obj = new City(display_name, lat, lon, response2);
             returnedData.push(obj);
         }
         ).catch(error => {
@@ -39,9 +43,10 @@ async function city(req, res) {
 module.exports = city;
 
 class City {
-    constructor(display_name, lat, lon) {
+    constructor(display_name, lat, lon, image_url) {
         this.display_name = display_name;
         this.lat = lat;
         this.lon = lon;
+        this.image_url = image_url;
     }
 }
