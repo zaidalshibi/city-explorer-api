@@ -1,16 +1,22 @@
 const axios = require('axios');
 
+const cache = {};
+
 async function movies(req, res){
-    try {
+    const returnedData = [];
         let url = `https://api.themoviedb.org/3/search/movie?api_key=${process.env.MOVIE_API_KEY}&query=${req.query.title}`
-        let response = await axios.get(url)
-        let data = response.data.results.map(movie => new Movie(movie.title, movie.overview, movie.vote_average, movie.vote_count, movie.poster_path, movie.popularity, movie.release_date))
-        res.send(data)
-        console.log(response.data)
+        if (cache[req.query.title] === undefined) {
+        await axios.get(url).then( response => {response.data.results.forEach(item => { let obj =  new Movie(item.title,item.overview,item.average_votes,item.total_votes, item.image_url , item.popularity, item.release_date);
+            returnedData.push(obj)})}
+        ).catch(error => {
+            res.status(400).send(error)
         }
-    catch (error) {
-        res.status(400).send(error)
-    }
+        )
+        cache[req.query.title] = returnedData;}
+        else {
+            returnedData.push(cache[req.query.title])
+        }
+        res.send(returnedData)
 }
 
 module.exports = movies;
