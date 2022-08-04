@@ -8,7 +8,7 @@ require('dotenv').config();
 
 const weather = require('./modules/weather');
 const movies = require('./modules/movies');
-const city = require('./modules/city');
+
 
 
 const cors = require("cors");
@@ -28,4 +28,3 @@ app.get('/', (_req, res) => {
 
 app.get('/weather', weather);
 app.get('/movies', movies);
-app.get('/city', city);
