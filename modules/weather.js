@@ -3,23 +3,24 @@ const axios = require('axios');
 const cache = {};
 
 async function weather(req, res){
-        const returnedData = [];
         let lat = req.query.lat;
         let lon = req.query.lon;
         let searchQuery = req.query.searchQuery;
         let url = `https://api.weatherbit.io/v2.0/forecast/daily?lat=${lat}&lon=${lon}&key=${process.env.WEATHER_API_KEY}`;
-        if (cache[searchQuery] === undefined) {
-        await axios.get(url).then( response => {response.data.data.forEach(item => { let obj =  new Weather(item.datetime,`Low of ${item.low_temp}, high of ${item.max_temp} with ${item.weather.description}`);
-            returnedData.push(obj)})}
-        ).catch(error => {
-            res.status(400).send(error)
+        if (cache[searchQuery] !== undefined) {
+            res.status(200).send(cache[searchQuery]);
+            }
+            else {
+            const dataSet = await axios.get(url);
+            try{
+            const obj = dataSet.data.data.map(item => new Weather(item.datetime,`Low of ${item.low_temp}, high of ${item.max_temp} with ${item.weather.description}`));
+            cache[searchQuery] = obj;
+            res.status(200).send(obj);
+            }
+            catch(error){
+                res.status(400).send(error)
+            }
         }
-        )
-        cache[searchQuery] = returnedData;}
-        else {
-            returnedData.push(cache[searchQuery])
-        }
-        res.send(returnedData)
 }
 
 module.exports = weather;
